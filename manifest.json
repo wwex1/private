@@ -7,5 +7,5 @@
     "css": "style.css",
     "author": "소나",
     "version": "1.0.0",
-    "description": "채팅에서 아이템/인벤토리를 파싱하여 시스템 프롬프트에 주입하는 확장"
+    "description": "아이템"
 }
