@@ -1,16 +1,17 @@
 /**
  * Private 📦 — SillyTavern Extension
+ * 키워드 매칭 기반 아이템 인벤토리 → 시스템 프롬프트 주입
  */
 
 import { event_types } from '../../../events.js';
 
 const EXT_NAME = 'private';
-const VERSION = '1.1.0';
+const VERSION = '1.2.0';
 
 const DEFAULTS = {
     version: VERSION,
-    items: [],
-    // items: [{ id, name, description, location, keywords: [] }]
+    inventory: {},
+    // inventory: { [characterId]: [{ id, name, description, location, keywords }] }
     apiSource: 'main',
     connectionProfileId: '',
 };
@@ -20,6 +21,27 @@ let ctx = null;
 function save() { ctx.saveSettingsDebounced(); }
 function getSettings() { return ctx.extensionSettings[EXT_NAME]; }
 function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+
+function getCharKey() {
+    const id = ctx.characterId;
+    if (id === undefined || id === null) return null;
+    return String(id);
+}
+
+function getItems() {
+    const s = getSettings();
+    const key = getCharKey();
+    if (!key) return [];
+    if (!s.inventory[key]) s.inventory[key] = [];
+    return s.inventory[key];
+}
+
+function setItems(items) {
+    const s = getSettings();
+    const key = getCharKey();
+    if (!key) return;
+    s.inventory[key] = items;
+}
 
 // ── INIT ──────────────────────────────────────────────────────
 async function init() {
@@ -33,10 +55,16 @@ async function init() {
     for (const [k, v] of Object.entries(DEFAULTS)) {
         if (s[k] === undefined) s[k] = structuredClone(v);
     }
-    // 기존 아이템에 keywords 필드 없으면 추가
-    s.items.forEach(item => {
-        if (!Array.isArray(item.keywords)) item.keywords = [];
-    });
+
+    // 마이그레이션: 이전 items 배열 → inventory 객체
+    if (Array.isArray(s.items) && s.items.length > 0) {
+        const key = getCharKey();
+        if (key) {
+            s.inventory[key] = s.items;
+        }
+        delete s.items;
+        save();
+    }
 
     loadSettingsUI();
     addMagicButton();
@@ -46,22 +74,24 @@ async function init() {
     console.log(`[${EXT_NAME}] 초기화 완료 ✓`);
 }
 
-// ── CHAT EVENT: 매 메시지마다 키워드 매칭 ─────────────────────
+// ── CHAT EVENT ────────────────────────────────────────────────
 function bindChatEvent() {
     ctx.eventSource.on(event_types.MESSAGE_RECEIVED, () => updatePromptByKeyword());
     ctx.eventSource.on(event_types.MESSAGE_SENT, () => updatePromptByKeyword());
-    ctx.eventSource.on(event_types.CHAT_CHANGED, () => updatePromptByKeyword());
+    ctx.eventSource.on(event_types.CHAT_CHANGED, () => {
+        updatePromptByKeyword();
+        updateSettingsCount();
+    });
 }
 
 // ── KEYWORD MATCHING → PROMPT INJECTION ──────────────────────
 function updatePromptByKeyword() {
-    const s = getSettings();
-    if (!s.items.length) {
+    const items = getItems();
+    if (!items.length) {
         if (ctx.setExtensionPrompt) ctx.setExtensionPrompt(EXT_NAME, '', 1, 0);
         return;
     }
 
-    // 최근 메시지 1개 텍스트
     const chat = ctx.chat;
     const lastMsg = chat?.[chat.length - 1];
     const text = (lastMsg?.mes || '').toLowerCase();
@@ -71,8 +101,7 @@ function updatePromptByKeyword() {
         return;
     }
 
-    // 키워드 매칭
-    const matched = s.items.filter(item => {
+    const matched = items.filter(item => {
         if (!item.keywords || !item.keywords.length) return false;
         return item.keywords.some(kw => kw && text.includes(kw.toLowerCase()));
     });
@@ -82,7 +111,6 @@ function updatePromptByKeyword() {
         return;
     }
 
-    // 매칭된 아이템만 영어로 프롬프트 구성
     let prompt = '\n[INVENTORY — Active Items]\n';
     prompt += `Items currently relevant to the scene that {{user}} possesses:\n`;
     matched.forEach((item, i) => {
@@ -199,17 +227,13 @@ function loadSettingsUI() {
                 <div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>
             </div>
             <div class="inline-drawer-content">
-                <p style="font-size:12px;color:#888;margin:8px 0;">확장 메뉴(✨)에서 인벤토리를 열 수 있습니다.</p>
-                <p style="font-size:11px;color:#666;margin:4px 0;">키워드 매칭: 최근 메시지에서 한국어 키워드가 감지되면 해당 아이템이 자동으로 프롬프트에 삽입됩니다.</p>
-
-                <label style="font-size:12px;font-weight:600;margin-top:8px;display:block;">API 소스 (AI 파싱용)</label>
+                <label style="font-size:12px;font-weight:600;display:block;">API 소스</label>
                 <select id="priv-api-source" class="text_pole" style="font-size:12px;margin-top:4px;">
-                    <option value="main">Main API (generateRaw)</option>
+                    <option value="main">Main API</option>
                     ${profileOptions}
                 </select>
-
                 <div id="priv-item-count" style="font-size:12px;color:#666;margin-top:8px;">아이템: 0개</div>
-                <div style="margin-top:10px;">
+                <div style="margin-top:8px;">
                     <button id="priv-open-btn" class="menu_button" style="width:100%;">📦 팝업 열기</button>
                 </div>
             </div>
@@ -237,8 +261,8 @@ function loadSettingsUI() {
 }
 
 function updateSettingsCount() {
-    const s = getSettings();
-    $('#priv-item-count').text(`아이템: ${s.items.length}개`);
+    const items = getItems();
+    $('#priv-item-count').text(`아이템: ${items.length}개`);
 }
 
 // ── MAGIC BUTTON ──────────────────────────────────────────────
@@ -271,13 +295,17 @@ function addMagicButton() {
 function openPopup() {
     if (document.getElementById('priv-overlay')) { closePopup(); return; }
 
+    if (!getCharKey()) {
+        alert('캐릭터를 먼저 선택하세요.');
+        return;
+    }
+
     const overlay = document.createElement('div');
     overlay.id = 'priv-overlay';
     overlay.addEventListener('click', (e) => { if (e.target === overlay) closePopup(); });
 
     const popup = document.createElement('div');
     popup.id = 'priv-popup';
-    popup.style.position = 'relative';
 
     overlay.appendChild(popup);
     document.body.appendChild(overlay);
@@ -291,14 +319,15 @@ function closePopup() {
 
 // ── RENDER: INVENTORY LIST ───────────────────────────────────
 function renderInventory(popup) {
-    const s = getSettings();
+    const items = getItems();
+    const charName = ctx.name2 || '캐릭터';
 
-    const itemsHTML = s.items.length === 0
+    const itemsHTML = items.length === 0
         ? `<div class="priv-empty">
             <i class="fa-solid fa-box-open"></i>
-            인벤토리가 비어있습니다.<br/>아이템을 추가하거나 AI 파싱을 해보세요.
+            인벤토리가 비어있습니다.
            </div>`
-        : s.items.map((item, i) => `
+        : items.map((item, i) => `
             <div class="priv-item" data-idx="${i}">
                 <div class="priv-item-top">
                     <div class="priv-item-name">${escHtml(item.name)}</div>
@@ -326,11 +355,11 @@ function renderInventory(popup) {
         <div class="priv-topbar">
             <div class="priv-header">
                 <span style="font-size:18px;">📦</span>
-                <span class="priv-title">Inventory</span>
+                <span class="priv-title">${escHtml(charName)}</span>
             </div>
             <div class="priv-close" id="priv-close">✕</div>
         </div>
-        <div class="priv-count">보유 아이템 <span>${s.items.length}</span>개</div>
+        <div class="priv-count">아이템 <span>${items.length}</span>개</div>
         <div class="priv-item-list">${itemsHTML}</div>
         <div class="priv-divider"></div>
         <div class="priv-btn-row">
@@ -383,9 +412,10 @@ function renderInventory(popup) {
         el.addEventListener('click', (e) => {
             e.stopPropagation();
             const idx = parseInt(el.dataset.idx);
-            const item = s.items[idx];
+            const items = getItems();
+            const item = items[idx];
             if (confirm(`"${item.name}" 삭제?`)) {
-                s.items.splice(idx, 1);
+                items.splice(idx, 1);
                 save();
                 updatePromptByKeyword();
                 updateSettingsCount();
@@ -397,9 +427,9 @@ function renderInventory(popup) {
 
 // ── EDIT / ADD MODAL ─────────────────────────────────────────
 function showEditModal(popup, idx) {
-    const s = getSettings();
+    const items = getItems();
     const isEdit = idx !== null;
-    const item = isEdit ? s.items[idx] : { name: '', description: '', location: '', keywords: [] };
+    const item = isEdit ? items[idx] : { name: '', description: '', location: '', keywords: [] };
 
     popup.querySelector('.priv-edit-overlay')?.remove();
 
@@ -409,20 +439,20 @@ function showEditModal(popup, idx) {
     <div class="priv-edit-box">
         <div class="priv-edit-title">${isEdit ? '아이템 수정' : '아이템 추가'}</div>
         <div class="priv-edit-field">
-            <label>이름 (영어)</label>
+            <label>Name</label>
             <input id="priv-ed-name" type="text" value="${escAttr(item.name)}" placeholder="Iron Sword" />
         </div>
         <div class="priv-edit-field">
-            <label>설명 (영어)</label>
+            <label>Description</label>
             <input id="priv-ed-desc" type="text" value="${escAttr(item.description)}" placeholder="A rusty iron sword" />
         </div>
         <div class="priv-edit-field">
-            <label>위치 (영어)</label>
-            <input id="priv-ed-loc" type="text" value="${escAttr(item.location)}" placeholder="backpack / inventory" />
+            <label>Location</label>
+            <input id="priv-ed-loc" type="text" value="${escAttr(item.location)}" placeholder="backpack" />
         </div>
         <div class="priv-edit-field">
-            <label>키워드 (한국어, 쉼표로 구분)</label>
-            <input id="priv-ed-kw" type="text" value="${escAttr((item.keywords || []).join(', '))}" placeholder="철검, 검, 무기" />
+            <label>키워드 (쉼표 구분)</label>
+            <input id="priv-ed-kw" type="text" value="${escAttr((item.keywords || []).join(', '))}" placeholder="철검, 검, 칼" />
         </div>
         <div class="priv-edit-btns">
             <button class="priv-edit-cancel">취소</button>
@@ -443,12 +473,12 @@ function showEditModal(popup, idx) {
         const keywords = kwRaw.split(',').map(k => k.trim()).filter(Boolean);
 
         if (isEdit) {
-            s.items[idx].name = name;
-            s.items[idx].description = desc;
-            s.items[idx].location = loc;
-            s.items[idx].keywords = keywords;
+            items[idx].name = name;
+            items[idx].description = desc;
+            items[idx].location = loc;
+            items[idx].keywords = keywords;
         } else {
-            s.items.push({ id: genId(), name, description: desc, location: loc, keywords });
+            items.push({ id: genId(), name, description: desc, location: loc, keywords });
         }
 
         save();
@@ -524,26 +554,23 @@ ${messages}`;
     }
 }
 
-// ── MERGE: 기존 아이템 매칭 + 업데이트 ───────────────────────
+// ── MERGE ─────────────────────────────────────────────────────
 function mergeItems(parsed) {
-    const s = getSettings();
-    const existing = s.items;
+    const items = getItems();
 
     for (const newItem of parsed) {
         const name = newItem.name.trim();
         if (!name) continue;
 
-        const match = existing.find(e => e.name.toLowerCase() === name.toLowerCase());
+        const match = items.find(e => e.name.toLowerCase() === name.toLowerCase());
 
         if (match) {
-            // 기존 아이템 → 변경분 업데이트
             if (newItem.description && newItem.description.trim()) {
                 match.description = newItem.description.trim();
             }
             if (newItem.location && newItem.location.trim()) {
                 match.location = newItem.location.trim();
             }
-            // 키워드: 기존 + 새 키워드 합침 (중복 제거)
             if (Array.isArray(newItem.keywords) && newItem.keywords.length) {
                 const merged = [...new Set([
                     ...(match.keywords || []),
@@ -552,8 +579,7 @@ function mergeItems(parsed) {
                 match.keywords = merged;
             }
         } else {
-            // 새 아이템 추가
-            existing.push({
+            items.push({
                 id: genId(),
                 name: name,
                 description: (newItem.description || '').trim(),
