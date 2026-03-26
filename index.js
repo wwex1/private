@@ -1,6 +1,5 @@
 /**
  * Private 📦 — SillyTavern Extension
- * 키워드 매칭 기반 아이템 인벤토리 → 시스템 프롬프트 주입
  */
 
 import { event_types } from '../../../events.js';
