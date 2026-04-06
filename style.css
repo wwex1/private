@@ -167,6 +167,9 @@ body[data-pv-theme="default"] .facts-item {
 /* 메모 */
 body[data-pv-theme="skyblue"] .pv-memo {
   padding: 8px 12px;
+  padding-bottom: 12px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid #e0e0e0;
   font-size: .9em;
   color: #243242;
 }
@@ -193,7 +196,10 @@ body[data-pv-theme="skyblue"] .pv-memo-dot {
 
 /* 인포블록 */
 body[data-pv-theme="skyblue"] .pv-info {
-  padding: 8px 12px;
+  padding: 12px 12px;
+  margin: 6px 0;
+  border-top: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e0e0e0;
   font-size: .9em;
   color: #243242;
 }
@@ -210,7 +216,7 @@ body[data-pv-theme="skyblue"] .pv-info-row {
 }
 body[data-pv-theme="skyblue"] .pv-info-label {
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 500;
   color: #51a0de;
   background: #e3f0fa;
   padding: 2px 7px;
@@ -224,6 +230,7 @@ body[data-pv-theme="skyblue"] .pv-info-value {
   font-size: 12px;
   color: #243242;
   word-break: break-word;
+  font-weight: 400;
 }
 body[data-pv-theme="skyblue"] .pv-tabs-wrapper {
   display: flex;
@@ -249,7 +256,7 @@ body[data-pv-theme="skyblue"] .pv-tab-input:checked + .pv-tab-label {
   border-color: #51a0de;
   background: #51a0de;
   color: #fff;
-  font-weight: 600;
+  font-weight: 500;
 }
 body[data-pv-theme="skyblue"] .pv-tab-content {
   order: 2;
@@ -260,12 +267,6 @@ body[data-pv-theme="skyblue"] .pv-tab-content {
 }
 body[data-pv-theme="skyblue"] .pv-tab-input:checked + .pv-tab-label + .pv-tab-content {
   display: block;
-}
-body[data-pv-theme="skyblue"] .pv-tab-input:checked + .pv-tab-label {
-  border-color: #51a0de;
-  background: #51a0de;
-  color: #fff;
-  font-weight: 600;
 }
 body[data-pv-theme="skyblue"] .pv-tab-content .pv-info-rows {
   margin-bottom: 0;
@@ -278,7 +279,7 @@ body[data-pv-theme="skyblue"] .pv-char-row {
 }
 body[data-pv-theme="skyblue"] .pv-char-label {
   font-size: 9.5px;
-  font-weight: 600;
+  font-weight: 500;
   color: #51a0de;
   background: #e3f0fa;
   padding: 1px 6px;
@@ -290,11 +291,14 @@ body[data-pv-theme="skyblue"] .pv-char-value {
   font-size: 11.5px;
   color: #243242;
   word-break: break-word;
+  font-weight: 400;
 }
 
 /* 팩트 */
 body[data-pv-theme="skyblue"] .pv-facts {
   padding: 4px 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e0e0e0;
   display: flex;
   flex-direction: column;
   gap: 4px;
