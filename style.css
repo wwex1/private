@@ -171,7 +171,7 @@ body[data-pv-theme="skyblue"] .pv-info,
 body[data-pv-theme="skyblue"] .pv-info *,
 body[data-pv-theme="skyblue"] .pv-facts,
 body[data-pv-theme="skyblue"] .pv-facts * {
-  font-weight: 300 !important;
+  font-weight: 200 !important;
 }
 body[data-pv-theme="skyblue"] .pv-memo {
   padding: 8px 12px;
