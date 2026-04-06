@@ -215,7 +215,7 @@
         charRows.push(["Status", c.state]);
         charRows.push(["Action", c.pose]);
 
-        const charHtml = `<div class="pv-info-rows" style="flex-wrap:wrap;gap:4px 12px;">${charRows
+        const charHtml = `<div class="pv-info-rows">${charRows
           .map(
             ([l, v]) =>
               `<div class="pv-char-row"><span class="pv-char-label">${l}</span><span class="pv-char-value">${v}</span></div>`
@@ -231,7 +231,7 @@
 
     if (d.npcs.length) {
       const id = `t_${d.uid}_npc`;
-      const npcHtml = `<div class="pv-info-rows" style="flex-wrap:wrap;gap:4px 12px;">${d.npcs
+      const npcHtml = `<div class="pv-info-rows">${d.npcs
         .map(
           (n) =>
             `<div class="pv-char-row"><span class="pv-char-label">${n.name}</span><span class="pv-char-value">${n.desc}</span></div>`
