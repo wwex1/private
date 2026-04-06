@@ -1,307 +1,140 @@
-/* ── Private Extension ── */
+/* ===== Private 패널 테마 — 구조 CSS ===== */
+/* 테마 변수는 인덱스.js에서 동적으로 주입됨 */
 
-#priv-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.45);
-    z-index: 99999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    animation: priv-fadeIn 0.15s ease;
+/* 메모 패널 */
+.memo-panel {
+  position: relative;
+  margin: 6px 0;
+  padding: 10px 15px;
+  border-radius: var(--pv-radius, 8px);
+  background: var(--pv-memo-bg, #fff);
+  border: 1px solid var(--pv-memo-border, #eaeaea);
+  font-family: var(--pv-font, 'Pretendard', 'Malgun Gothic', sans-serif);
+  font-size: .95em;
+  line-height: 1.7;
+  color: var(--pv-text, #333);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
-
-@keyframes priv-fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+.memo-content {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
 }
-
-#priv-popup {
-    position: relative;
-    width: 360px;
-    max-width: 92vw;
-    max-height: 75vh;
-    background: #1a1a2e;
-    border-radius: 16px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-    color: #e0e0e0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    font-size: 13px;
-}
-
-#priv-popup::-webkit-scrollbar { width: 4px; }
-#priv-popup::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
-
-.priv-screen { padding: 16px; }
-
-/* ── Topbar ── */
-.priv-topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 4px;
+.memo-highlight {
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  background: linear-gradient(to bottom, transparent 55%, var(--hl) 55%);
+  padding: 0 3px;
+  border-radius: 3px;
+  font-weight: 500;
+  color: var(--pv-text-strong, #000);
 }
 
-.priv-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    min-width: 0;
+/* 인포블록 */
+.simple-container {
+  background: var(--pv-info-bg, #fff);
+  border: 1px solid var(--pv-info-border, #ddd);
+  border-radius: var(--pv-radius, 8px);
+  padding: 12px;
+  margin: 10px 0;
+  font-size: .9em;
+  line-height: 1.5;
+  color: var(--pv-text, #333);
+  box-sizing: border-box;
+}
+.simple-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--pv-info-border, #ddd);
+}
+.simple-row:last-child {
+  border-bottom: none;
+}
+.simple-label {
+  color: var(--pv-text-strong, #000);
+  font-weight: 700;
+  white-space: nowrap;
+  margin-right: 12px;
+  min-width: 50px;
+}
+.simple-value {
+  color: var(--pv-text-sub, #555);
+  text-align: right;
+  flex: 1;
+  word-break: keep-all;
 }
 
-.priv-title {
-    font-size: 16px;
-    font-weight: 700;
-    color: #fff;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+/* 탭 */
+.simple-tabs-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid var(--pv-info-border, #ddd);
+}
+.simple-tab-input {
+  display: none !important;
+}
+.simple-tab-label {
+  order: 1;
+  padding: 4px 12px;
+  border: 1px solid var(--pv-tab-border, #ddd);
+  border-radius: 20px;
+  background: var(--pv-tab-bg, #f5f5f5);
+  color: var(--pv-text-sub, #555);
+  font-size: .85em;
+  cursor: pointer;
+  transition: all .2s;
+  user-select: none;
+}
+.simple-tab-input:checked + .simple-tab-label {
+  background: var(--pv-tab-active-bg, #333);
+  color: var(--pv-tab-active-text, #fff);
+  border-color: var(--pv-tab-active-bg, #333);
+  font-weight: bold;
+}
+.simple-tab-content {
+  order: 2;
+  width: 100%;
+  display: none;
+  margin-top: 10px;
+  animation: sFade .3s ease;
+}
+.simple-tab-input:checked + .simple-tab-label + .simple-tab-content {
+  display: block;
+}
+@keyframes sFade {
+  from { opacity: 0; transform: translateY(-5px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-.priv-close {
-    cursor: pointer;
-    font-size: 14px;
-    color: #888;
-    padding: 4px 8px;
-    border-radius: 6px;
-    transition: background 0.15s;
-    flex-shrink: 0;
+/* 팩트 */
+.facts-container {
+  margin: 8px 0;
+  padding: 12px;
+  border-radius: var(--pv-radius-lg, 12px);
+  background: var(--pv-facts-bg, #fff);
+  border: 1px solid var(--pv-facts-border, #eee);
+  font-family: var(--pv-font, 'Pretendard', 'Malgun Gothic', sans-serif);
+  font-size: .85em;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-sizing: border-box;
 }
-.priv-close:hover { background: rgba(255,255,255,0.08); }
-
-/* ── Count ── */
-.priv-count {
-    font-size: 11px;
-    color: #888;
-    margin: 8px 0 12px;
-}
-.priv-count span {
-    color: #7c9ef7;
-    font-weight: 600;
-}
-
-/* ── Item list ── */
-.priv-item-list {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.priv-item {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 10px;
-    padding: 10px 12px;
-    transition: background 0.15s;
-}
-.priv-item:hover { background: rgba(255, 255, 255, 0.07); }
-
-.priv-item-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.priv-item-name {
-    font-size: 13px;
-    font-weight: 600;
-    color: #e8e8e8;
-}
-
-.priv-item-actions {
-    display: flex;
-    gap: 4px;
-}
-
-.priv-item-actions button {
-    background: none;
-    border: none;
-    color: #666;
-    cursor: pointer;
-    font-size: 11px;
-    padding: 2px 6px;
-    border-radius: 4px;
-    transition: color 0.15s, background 0.15s;
-}
-.priv-item-actions button:hover {
-    color: #aaa;
-    background: rgba(255,255,255,0.06);
-}
-.priv-item-actions button.priv-del-btn:hover { color: #e57373; }
-
-.priv-item-desc {
-    font-size: 11px;
-    color: #999;
-    margin-top: 4px;
-    line-height: 1.4;
-}
-
-.priv-item-loc {
-    font-size: 10px;
-    color: #6a8fc7;
-    margin-top: 3px;
-}
-.priv-item-loc i { margin-right: 3px; }
-
-/* ── Keywords ── */
-.priv-item-kw {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 4px;
-    margin-top: 5px;
-}
-
-.priv-kw-tag {
-    font-size: 10px;
-    color: #9bb8e0;
-    background: rgba(124, 158, 247, 0.1);
-    border: 1px solid rgba(124, 158, 247, 0.15);
-    border-radius: 4px;
-    padding: 1px 6px;
-    line-height: 1.4;
-}
-
-/* ── Empty state ── */
-.priv-empty {
-    text-align: center;
-    color: #555;
-    padding: 32px 16px;
-    font-size: 12px;
-}
-.priv-empty i {
-    font-size: 28px;
-    display: block;
-    margin-bottom: 10px;
-    color: #444;
-}
-
-/* ── Buttons ── */
-.priv-btn-row {
-    display: flex;
-    gap: 8px;
-    margin-top: 12px;
-}
-
-.priv-sync-btn,
-.priv-add-btn {
-    flex: 1;
-    padding: 10px;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: 600;
-    transition: opacity 0.15s, transform 0.1s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-}
-.priv-sync-btn:active, .priv-add-btn:active { transform: scale(0.97); }
-
-.priv-sync-btn {
-    background: rgba(124, 158, 247, 0.15);
-    color: #7c9ef7;
-}
-.priv-sync-btn:hover { background: rgba(124, 158, 247, 0.22); }
-
-.priv-add-btn {
-    background: rgba(129, 199, 132, 0.15);
-    color: #81c784;
-}
-.priv-add-btn:hover { background: rgba(129, 199, 132, 0.22); }
-
-/* ── Edit modal ── */
-.priv-edit-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-    border-radius: 16px;
-}
-
-.priv-edit-box {
-    background: #1e1e36;
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 12px;
-    padding: 16px;
-    width: 300px;
-    max-width: 90%;
-}
-
-.priv-edit-title {
-    font-size: 13px;
-    font-weight: 700;
-    color: #fff;
-    margin-bottom: 12px;
-}
-
-.priv-edit-field {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    margin-bottom: 10px;
-}
-
-.priv-edit-field label {
-    font-size: 10px;
-    color: #888;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.priv-edit-field input {
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 8px;
-    padding: 8px 10px;
-    color: #e0e0e0;
-    font-size: 12px;
-    outline: none;
-    transition: border-color 0.15s;
-}
-.priv-edit-field input:focus {
-    border-color: rgba(124, 158, 247, 0.5);
-}
-
-.priv-edit-btns {
-    display: flex;
-    gap: 8px;
-    margin-top: 4px;
-}
-
-.priv-edit-btns button {
-    flex: 1;
-    padding: 8px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: 600;
-}
-
-.priv-edit-cancel {
-    background: rgba(255,255,255,0.06);
-    color: #aaa;
-}
-.priv-edit-cancel:hover { background: rgba(255,255,255,0.1); }
-
-.priv-edit-save {
-    background: rgba(124, 158, 247, 0.2);
-    color: #7c9ef7;
-}
-.priv-edit-save:hover { background: rgba(124, 158, 247, 0.3); }
-
-/* ── Divider ── */
-.priv-divider {
-    height: 1px;
-    background: rgba(255,255,255,0.06);
-    margin: 12px 0;
+.facts-item {
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: var(--pv-facts-item-bg, #f9f9f9);
+  border: 1px solid var(--pv-facts-item-border, #eaeaea);
+  color: var(--pv-text, #333);
+  font-weight: 400;
+  font-size: .95em;
+  line-height: 1.6;
+  word-break: break-word;
 }
