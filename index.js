@@ -467,7 +467,7 @@
 
   jQuery(async () => {
     const settingsHtml = await $.get(
-      `/scripts/extensions/third-party/${EXT_NAME}/설정.html`
+      `/scripts/extensions/third-party/${EXT_NAME}/settings.html`
     );
     $("#extensions_settings2").append(settingsHtml);
 
