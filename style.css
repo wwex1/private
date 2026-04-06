@@ -1,140 +1,286 @@
-/* ===== Private 패널 테마 — 구조 CSS ===== */
-/* 테마 변수는 인덱스.js에서 동적으로 주입됨 */
+/* =============================================================
+   Private 패널 테마 v2 — 구조 + 테마별 오버라이드
+   테마 전환: body[data-pv-theme="xxx"]
+   ============================================================= */
 
-/* 메모 패널 */
-.memo-panel {
+/* ─── 공통 구조 (모든 테마 공유) ─── */
+
+.memo-panel,
+.pv-memo {
   position: relative;
   margin: 6px 0;
-  padding: 10px 15px;
-  border-radius: var(--pv-radius, 8px);
-  background: var(--pv-memo-bg, #fff);
-  border: 1px solid var(--pv-memo-border, #eaeaea);
-  font-family: var(--pv-font, 'Pretendard', 'Malgun Gothic', sans-serif);
-  font-size: .95em;
-  line-height: 1.7;
-  color: var(--pv-text, #333);
   box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
+  font-family: 'Pretendard', 'Malgun Gothic', sans-serif;
+  line-height: 1.7;
 }
-.memo-content {
+.memo-content,
+.pv-memo-content {
   display: flex;
   flex-direction: column;
   gap: 3px;
 }
-.memo-highlight {
+
+.simple-container,
+.pv-info {
+  margin: 10px 0;
+  box-sizing: border-box;
+  font-family: 'Pretendard', 'Malgun Gothic', sans-serif;
+  line-height: 1.5;
+}
+
+.simple-tab-input,
+.pv-tab-input {
+  display: none !important;
+}
+.simple-tab-content,
+.pv-tab-content {
+  order: 2;
+  width: 100%;
+  display: none;
+  margin-top: 10px;
+  animation: pvFade .3s ease;
+}
+.simple-tab-input:checked + .simple-tab-label + .simple-tab-content,
+.pv-tab-input:checked + .pv-tab-label + .pv-tab-content {
+  display: block;
+}
+@keyframes pvFade {
+  from { opacity: 0; transform: translateY(-5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.facts-container,
+.pv-facts {
+  margin: 8px 0;
+  box-sizing: border-box;
+  font-family: 'Pretendard', 'Malgun Gothic', sans-serif;
+}
+
+
+/* =============================================================
+   테마: default (화이트)
+   ============================================================= */
+
+body[data-pv-theme="default"] .memo-panel {
+  padding: 10px 15px;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid #eaeaea;
+  font-size: .95em;
+  color: #333;
+}
+body[data-pv-theme="default"] .memo-highlight {
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
   background: linear-gradient(to bottom, transparent 55%, var(--hl) 55%);
   padding: 0 3px;
   border-radius: 3px;
   font-weight: 500;
-  color: var(--pv-text-strong, #000);
+  color: #000;
 }
 
-/* 인포블록 */
-.simple-container {
-  background: var(--pv-info-bg, #fff);
-  border: 1px solid var(--pv-info-border, #ddd);
-  border-radius: var(--pv-radius, 8px);
+body[data-pv-theme="default"] .simple-container {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
   padding: 12px;
-  margin: 10px 0;
   font-size: .9em;
-  line-height: 1.5;
-  color: var(--pv-text, #333);
-  box-sizing: border-box;
+  color: #333;
 }
-.simple-row {
+body[data-pv-theme="default"] .simple-row {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   padding: 6px 0;
-  border-bottom: 1px dashed var(--pv-info-border, #ddd);
+  border-bottom: 1px dashed #ddd;
 }
-.simple-row:last-child {
+body[data-pv-theme="default"] .simple-row:last-child {
   border-bottom: none;
 }
-.simple-label {
-  color: var(--pv-text-strong, #000);
+body[data-pv-theme="default"] .simple-label {
+  color: #000;
   font-weight: 700;
   white-space: nowrap;
   margin-right: 12px;
   min-width: 50px;
 }
-.simple-value {
-  color: var(--pv-text-sub, #555);
+body[data-pv-theme="default"] .simple-value {
+  color: #555;
   text-align: right;
   flex: 1;
   word-break: keep-all;
 }
-
-/* 탭 */
-.simple-tabs-wrapper {
+body[data-pv-theme="default"] .simple-tabs-wrapper {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
   margin-top: 12px;
   padding-top: 8px;
-  border-top: 1px solid var(--pv-info-border, #ddd);
+  border-top: 1px solid #ddd;
 }
-.simple-tab-input {
-  display: none !important;
-}
-.simple-tab-label {
+body[data-pv-theme="default"] .simple-tab-label {
   order: 1;
   padding: 4px 12px;
-  border: 1px solid var(--pv-tab-border, #ddd);
+  border: 1px solid #ddd;
   border-radius: 20px;
-  background: var(--pv-tab-bg, #f5f5f5);
-  color: var(--pv-text-sub, #555);
+  background: #f5f5f5;
+  color: #555;
   font-size: .85em;
   cursor: pointer;
   transition: all .2s;
   user-select: none;
 }
-.simple-tab-input:checked + .simple-tab-label {
-  background: var(--pv-tab-active-bg, #333);
-  color: var(--pv-tab-active-text, #fff);
-  border-color: var(--pv-tab-active-bg, #333);
+body[data-pv-theme="default"] .simple-tab-input:checked + .simple-tab-label {
+  background: #333;
+  color: #fff;
+  border-color: #333;
   font-weight: bold;
 }
-.simple-tab-content {
-  order: 2;
-  width: 100%;
-  display: none;
-  margin-top: 10px;
-  animation: sFade .3s ease;
-}
-.simple-tab-input:checked + .simple-tab-label + .simple-tab-content {
-  display: block;
-}
-@keyframes sFade {
-  from { opacity: 0; transform: translateY(-5px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
 
-/* 팩트 */
-.facts-container {
-  margin: 8px 0;
+body[data-pv-theme="default"] .facts-container {
   padding: 12px;
-  border-radius: var(--pv-radius-lg, 12px);
-  background: var(--pv-facts-bg, #fff);
-  border: 1px solid var(--pv-facts-border, #eee);
-  font-family: var(--pv-font, 'Pretendard', 'Malgun Gothic', sans-serif);
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid #eee;
   font-size: .85em;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  box-sizing: border-box;
 }
-.facts-item {
+body[data-pv-theme="default"] .facts-item {
   padding: 8px 12px;
   border-radius: 10px;
-  background: var(--pv-facts-item-bg, #f9f9f9);
-  border: 1px solid var(--pv-facts-item-border, #eaeaea);
-  color: var(--pv-text, #333);
+  background: #f9f9f9;
+  border: 1px solid #eaeaea;
+  color: #333;
   font-weight: 400;
   font-size: .95em;
   line-height: 1.6;
+  word-break: break-word;
+}
+
+
+/* =============================================================
+   테마: skyblue (스카이블루 미니멀 — C스타일 태그형)
+   ============================================================= */
+
+/* 메모 */
+body[data-pv-theme="skyblue"] .pv-memo {
+  padding: 8px 12px;
+  font-size: .9em;
+  color: #243242;
+}
+body[data-pv-theme="skyblue"] .pv-memo-content {
+  gap: 6px;
+}
+body[data-pv-theme="skyblue"] .pv-memo-item {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 13px;
+  color: #243242;
+  line-height: 1.7;
+}
+body[data-pv-theme="skyblue"] .pv-memo-dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #51a0de;
+  flex-shrink: 0;
+  margin-top: 7px;
+}
+
+/* 인포블록 */
+body[data-pv-theme="skyblue"] .pv-info {
+  padding: 8px 12px;
+  font-size: .9em;
+  color: #243242;
+}
+body[data-pv-theme="skyblue"] .pv-info-rows {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  margin-bottom: 12px;
+}
+body[data-pv-theme="skyblue"] .pv-info-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+body[data-pv-theme="skyblue"] .pv-info-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: #51a0de;
+  background: #e3f0fa;
+  padding: 2px 7px;
+  border-radius: 4px;
+  letter-spacing: .3px;
+  text-transform: uppercase;
+}
+body[data-pv-theme="skyblue"] .pv-info-value {
+  font-size: 12px;
+  color: #243242;
+}
+body[data-pv-theme="skyblue"] .pv-tabs-wrapper {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+body[data-pv-theme="skyblue"] .pv-tab-label {
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 11.5px;
+  cursor: pointer;
+  border: 1px solid #b8d6ee;
+  background: transparent;
+  color: #456178;
+  font-weight: 400;
+  transition: all .15s;
+  user-select: none;
+  order: 1;
+}
+body[data-pv-theme="skyblue"] .pv-tab-input:checked + .pv-tab-label {
+  border-color: #51a0de;
+  background: #51a0de;
+  color: #fff;
+  font-weight: 600;
+}
+body[data-pv-theme="skyblue"] .pv-tab-content .pv-info-rows {
+  margin-bottom: 0;
+}
+body[data-pv-theme="skyblue"] .pv-char-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 0;
+}
+body[data-pv-theme="skyblue"] .pv-char-label {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: #51a0de;
+  background: #e3f0fa;
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+body[data-pv-theme="skyblue"] .pv-char-value {
+  font-size: 11.5px;
+  color: #243242;
+}
+
+/* 팩트 */
+body[data-pv-theme="skyblue"] .pv-facts {
+  padding: 4px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: .85em;
+}
+body[data-pv-theme="skyblue"] .pv-facts-item {
+  font-size: 12px;
+  color: #243242;
+  line-height: 1.6;
+  padding-left: 10px;
+  border-left: 2px solid #b8d6ee;
   word-break: break-word;
 }
