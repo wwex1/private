@@ -199,14 +199,14 @@ body[data-pv-theme="skyblue"] .pv-info {
 }
 body[data-pv-theme="skyblue"] .pv-info-rows {
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px 12px;
+  flex-direction: column;
+  gap: 5px;
   margin-bottom: 12px;
 }
 body[data-pv-theme="skyblue"] .pv-info-row {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
 }
 body[data-pv-theme="skyblue"] .pv-info-label {
   font-size: 10px;
@@ -217,10 +217,13 @@ body[data-pv-theme="skyblue"] .pv-info-label {
   border-radius: 4px;
   letter-spacing: .3px;
   text-transform: uppercase;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 body[data-pv-theme="skyblue"] .pv-info-value {
   font-size: 12px;
   color: #243242;
+  word-break: break-word;
 }
 body[data-pv-theme="skyblue"] .pv-tabs-wrapper {
   display: flex;
@@ -250,9 +253,9 @@ body[data-pv-theme="skyblue"] .pv-tab-content .pv-info-rows {
   margin-bottom: 0;
 }
 body[data-pv-theme="skyblue"] .pv-char-row {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
   padding: 3px 0;
 }
 body[data-pv-theme="skyblue"] .pv-char-label {
@@ -262,10 +265,13 @@ body[data-pv-theme="skyblue"] .pv-char-label {
   background: #e3f0fa;
   padding: 1px 6px;
   border-radius: 3px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 body[data-pv-theme="skyblue"] .pv-char-value {
   font-size: 11.5px;
   color: #243242;
+  word-break: break-word;
 }
 
 /* 팩트 */
