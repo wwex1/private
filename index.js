@@ -159,25 +159,34 @@
   //  SKYBLUE 테마 빌더
   // =========================================================
 
+  const PASTEL_SKYBLUE = [
+    "rgba(81,160,222,.2)", "rgba(81,160,222,.15)", "rgba(130,190,230,.2)",
+    "rgba(100,175,225,.18)", "rgba(81,160,222,.22)", "rgba(150,200,235,.2)",
+    "rgba(110,180,228,.17)", "rgba(81,160,222,.25)", "rgba(140,195,232,.18)",
+    "rgba(90,170,224,.2)", "rgba(120,185,229,.15)", "rgba(81,160,222,.18)",
+  ];
+
   function buildMemoSkyblue(lines) {
     const panel = document.createElement("div");
     panel.className = "pv-memo";
     const content = document.createElement("div");
     content.className = "pv-memo-content";
 
+    let bag = [];
     for (const t of lines) {
       if (!t) continue;
       const div = document.createElement("div");
-      div.className = "pv-memo-item";
-
-      const dot = document.createElement("span");
-      dot.className = "pv-memo-dot";
-      div.appendChild(dot);
-
-      const span = document.createElement("span");
-      span.textContent = t.replace(/^-\s*/, "");
-      div.appendChild(span);
-
+      if (t[0] === "-") {
+        const span = document.createElement("span");
+        span.className = "pv-memo-highlight";
+        span.textContent = t;
+        if (!bag.length) bag = PASTEL_SKYBLUE.slice();
+        const i = (Math.random() * bag.length) | 0;
+        span.style.setProperty("--hl", bag.splice(i, 1)[0]);
+        div.appendChild(span);
+      } else {
+        div.textContent = t;
+      }
       content.appendChild(div);
     }
     panel.appendChild(content);
