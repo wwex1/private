@@ -75,7 +75,7 @@ body[data-pv-theme="default"] .memo-highlight {
   background: linear-gradient(to bottom, transparent 55%, var(--hl) 55%);
   padding: 0 3px;
   border-radius: 3px;
-  font-weight: 500;
+  font-weight: 400;
   color: #000;
 }
 
@@ -165,6 +165,14 @@ body[data-pv-theme="default"] .facts-item {
    ============================================================= */
 
 /* 메모 */
+body[data-pv-theme="skyblue"] .pv-memo,
+body[data-pv-theme="skyblue"] .pv-memo *,
+body[data-pv-theme="skyblue"] .pv-info,
+body[data-pv-theme="skyblue"] .pv-info *,
+body[data-pv-theme="skyblue"] .pv-facts,
+body[data-pv-theme="skyblue"] .pv-facts * {
+  font-weight: 300 !important;
+}
 body[data-pv-theme="skyblue"] .pv-memo {
   padding: 8px 12px;
   padding-bottom: 12px;
@@ -216,7 +224,7 @@ body[data-pv-theme="skyblue"] .pv-info-row {
 }
 body[data-pv-theme="skyblue"] .pv-info-label {
   font-size: 10px;
-  font-weight: 500;
+  font-weight: 400;
   color: #51a0de;
   background: #e3f0fa;
   padding: 2px 7px;
@@ -256,7 +264,7 @@ body[data-pv-theme="skyblue"] .pv-tab-input:checked + .pv-tab-label {
   border-color: #51a0de;
   background: #51a0de;
   color: #fff;
-  font-weight: 500;
+  font-weight: 400;
 }
 body[data-pv-theme="skyblue"] .pv-tab-content {
   order: 2;
@@ -279,7 +287,7 @@ body[data-pv-theme="skyblue"] .pv-char-row {
 }
 body[data-pv-theme="skyblue"] .pv-char-label {
   font-size: 9.5px;
-  font-weight: 500;
+  font-weight: 400;
   color: #51a0de;
   background: #e3f0fa;
   padding: 1px 6px;
