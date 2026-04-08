@@ -18,7 +18,19 @@
       name: "스카이블루 미니멀",
       buildMemo: buildMemoSkyblue,
       buildInfo: buildInfoSkyblue,
-      buildFacts: null, // null = 공통 processFacts 사용 (테마 CSS로 스타일링)
+      buildFacts: null,
+    },
+    mint: {
+      name: "파스텔 연두",
+      buildMemo: buildMemoMint,
+      buildInfo: buildInfoMint,
+      buildFacts: null,
+    },
+    choco: {
+      name: "초코 브라운",
+      buildMemo: buildMemoChoco,
+      buildInfo: buildInfoChoco,
+      buildFacts: null,
     },
   };
 
@@ -162,27 +174,7 @@
   const SKYBLUE_HL = "rgba(81,160,222,.18)";
 
   function buildMemoSkyblue(lines) {
-    const panel = document.createElement("div");
-    panel.className = "pv-memo";
-    const content = document.createElement("div");
-    content.className = "pv-memo-content";
-
-    for (const t of lines) {
-      if (!t) continue;
-      const div = document.createElement("div");
-      if (t[0] === "-") {
-        const span = document.createElement("span");
-        span.className = "pv-memo-highlight";
-        span.textContent = t;
-        span.style.setProperty("--hl", SKYBLUE_HL);
-        div.appendChild(span);
-      } else {
-        div.textContent = t;
-      }
-      content.appendChild(div);
-    }
-    panel.appendChild(content);
-    return panel;
+    return _buildPvMemo(lines, SKYBLUE_HL);
   }
 
   function buildInfoSkyblue(d) {
@@ -248,6 +240,57 @@
       <div class="pv-info-rows">${rowsHtml}</div>
       <div class="pv-tabs-wrapper">${tabs}</div>`;
     return el;
+  }
+
+  // =========================================================
+  //  MINT 테마 빌더 (구조 동일, 색만 다름)
+  // =========================================================
+
+  const MINT_HL = "rgba(125,184,122,.18)";
+
+  function buildMemoMint(lines) {
+    return _buildPvMemo(lines, MINT_HL);
+  }
+  function buildInfoMint(d) {
+    return buildInfoSkyblue(d); // HTML 구조 동일, CSS가 색 처리
+  }
+
+  // =========================================================
+  //  CHOCO 테마 빌더 (구조 동일, 색만 다름)
+  // =========================================================
+
+  const CHOCO_HL = "rgba(123,91,58,.18)";
+
+  function buildMemoChoco(lines) {
+    return _buildPvMemo(lines, CHOCO_HL);
+  }
+  function buildInfoChoco(d) {
+    return buildInfoSkyblue(d); // HTML 구조 동일, CSS가 색 처리
+  }
+
+  // ─── 공통 pv 메모 빌더 ───
+  function _buildPvMemo(lines, hlColor) {
+    const panel = document.createElement("div");
+    panel.className = "pv-memo";
+    const content = document.createElement("div");
+    content.className = "pv-memo-content";
+
+    for (const t of lines) {
+      if (!t) continue;
+      const div = document.createElement("div");
+      if (t[0] === "-") {
+        const span = document.createElement("span");
+        span.className = "pv-memo-highlight";
+        span.textContent = t;
+        span.style.setProperty("--hl", hlColor);
+        div.appendChild(span);
+      } else {
+        div.textContent = t;
+      }
+      content.appendChild(div);
+    }
+    panel.appendChild(content);
+    return panel;
   }
 
   // =========================================================
@@ -379,9 +422,9 @@
     }
     if (!target) return;
 
-    const isSkyblue = currentTheme === "skyblue";
-    const containerClass = isSkyblue ? "pv-facts" : "facts-container";
-    const itemClass = isSkyblue ? "pv-facts-item" : "facts-item";
+    const isPv = currentTheme === "skyblue" || currentTheme === "mint" || currentTheme === "choco";
+    const containerClass = isPv ? "pv-facts" : "facts-container";
+    const itemClass = isPv ? "pv-facts-item" : "facts-item";
 
     target.innerHTML = target.innerHTML.replace(FACTS_RE, (_, content) => {
       const decoded = content
