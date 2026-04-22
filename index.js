@@ -14,6 +14,12 @@
       buildInfo: buildInfoDefault,
       buildFacts: null, // null = 공통 processFacts 사용
     },
+    mono: {
+      name: "모노 잉크",
+      buildMemo: buildMemoMono,
+      buildInfo: buildInfoMono,
+      buildFacts: null,
+    },
     skyblue: {
       name: "스카이블루 미니멀",
       buildMemo: buildMemoSkyblue,
@@ -165,6 +171,19 @@
       ${d.mood ? row("Mood", d.mood) : ""}
       <div class="simple-tabs-wrapper">${tabs}</div>`;
     return el;
+  }
+
+  // =========================================================
+  //  MONO 테마 빌더
+  // =========================================================
+
+  const MONO_HL = "rgba(50,50,50,.12)";
+
+  function buildMemoMono(lines) {
+    return _buildPvMemo(lines, MONO_HL);
+  }
+  function buildInfoMono(d) {
+    return buildInfoSkyblue(d); // HTML 구조 동일, CSS가 색 처리
   }
 
   // =========================================================
@@ -422,7 +441,7 @@
     }
     if (!target) return;
 
-    const isPv = currentTheme === "skyblue" || currentTheme === "mint" || currentTheme === "choco";
+    const isPv = currentTheme !== "default";
     const containerClass = isPv ? "pv-facts" : "facts-container";
     const itemClass = isPv ? "pv-facts-item" : "facts-item";
 
